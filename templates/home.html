@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        body {
+            background: rgb(217, 103, 25);
+            background: radial-gradient(circle, rgba(217, 103, 25, 1) 7%, rgba(17, 102, 165, 1) 100%);
+            color: black;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: block;
+            text-align: center;
+        }
+
+        .container {
+            background-color: white;
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;  /* Center the container horizontally */
+        }
+
+        .logo {
+            width: 120px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            margin-bottom: 15px;
+            width: 100%;
+            background-color: #1166a5; /* Same blue color for all buttons */
+            border: none;
+            color: white;
+            font-size: 16px;
+            padding: 12px 0;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0a4c73; /* Slightly darker shade on hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-outline-danger {
+            background-color: white;
+            color: #1166a5;
+            border: 2px solid #1166a5;
+            padding: 12px 0;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #1166a5;
+            color: white;
+            border: 2px solid #1166a5;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .card {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .card-title {
+            color: #1166a5;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-right: 10px;
+        }
+
+        .form-inline {
+            display: inline-block;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .output {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        table th, table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+        }
+
+        /* For form inputs */
+        .form-inline input, .form-inline button {
+            width: 48%; /* Make them nearly the same size */
+            margin-right: 4%; /* Adding space between the inputs */
+        }
+
+        .form-inline button {
+            width: 48%;
+            margin-left: 4%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo -->
+        <img src="/static/main/Icon.png" alt="Logo" class="logo">
+
+        <div class="row mb-4">
+            <div class="col">
+                <button class="btn btn-success" onclick="window.location.href='/upload-entry-photo'">Upload Entry Photo</button>
+            </div>
+            <div class="col">
+                <button class="btn btn-success" onclick="window.location.href='/upload-exit-photo'">Upload Exit Photo</button>
+            </div>
+            <div class="col">
+                <button class="btn btn-success" onclick="window.location.href='/payment'">Make Payment</button>
+            </div>
+            <div class="col" id="searchButtonContainer" style="display: none;">
+                <button class="btn btn-success" onclick="window.location.href='/search'">Search</button>
+            </div>
+            <div class="col">
+                <a href="/logout" class="btn btn-outline-danger">Logout</a>
+            </div>
+        </div>
+
+        <!-- Admin Reports Card -->
+        <div class="card mb-4" id="adminReports" style="display: none;">
+            <div class="card-body">
+                <h3 class="card-title">Admin Reports</h3>
+                <div class="row mb-3">
+                    <div class="col">
+                        <button id="allDataBtn" class="btn btn-primary">Generate Report for All Data</button>
+                    </div>
+                    <div class="col">
+                        <button id="usersDataBtn" class="btn btn-primary">Generate Report for Users</button>
+                    </div>
+                </div>
+                <div id="output" class="output"></div>
+            </div>
+        </div>
+
+        <!-- Blacklist Management Card -->
+        <div class="card mb-4" id="blacklistAdmin" style="display: none;">
+            <div class="card-body">
+                <h3 class="card-title">Blacklist Management</h3>
+                <div class="row">
+                    <div class="col">
+                        <form id="addBlacklistForm" class="form-inline">
+                            <input type="text" id="plateIdAdd" class="form-control mb-2" placeholder="Enter License Plate to Add">
+                            <button type="button" class="btn btn-warning mb-2" onclick="addToBlacklist()">Add to Blacklist</button>
+                        </form>
+                    </div>
+                    <div class="col">
+                        <form id="removeBlacklistForm" class="form-inline">
+                            <input type="text" id="plateIdRemove" class="form-control mb-2" placeholder="Enter License Plate to Add">
+                            <button type="button" class="btn btn-danger mb-2" onclick="removeFromBlacklist()">Remove from Blacklist</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle Management Card -->
+        <div class="card mb-4" id="vehiclelistAdmin" style="display: none;">
+            <div class="card-body">
+                <h3 class="card-title">Vehicle Management</h3>
+                <form id="addVehicleForm" class="form-inline">
+                    <div class="form-group mb-2">
+                        <input type="text" id="vehiclePlateIdAdd" class="form-control" placeholder="Enter License Plate to Add">
+                    </div>
+                    <button type="button" class="btn btn-primary mb-2" onclick="addVehicle()">Add Vehicle</button>
+
+                    <div class="form-group mb-2">
+                        <input type="text" id="vehiclePlateIdRemove" class="form-control" placeholder="Enter License Plate to Remove">
+                    </div>
+                    <button type="button" class="btn btn-danger mb-2" onclick="removeVehicle()">Remove Vehicle</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Parking History Card -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title">Parking History</h3>
+                <div id="parkingHistoryOutput"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Prevent button color change by adding a 'clicked' state
+        document.querySelectorAll('.btn').forEach(function(button) {
+            button.addEventListener('click', function() {
+                this.setAttribute('data-clicked', 'true');
+            });
+        });
+    </script>
+
+    <script src="/scripts/home.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
