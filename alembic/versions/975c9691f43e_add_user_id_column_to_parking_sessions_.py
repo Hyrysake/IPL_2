@@ -20,7 +20,6 @@ depends_on = None
 
 def upgrade():
     # Добавление столбца user_id с разрешением NULL значений
-    op.add_column('parking_sessions', sa.Column('user_id', sa.Integer(), nullable=True))
     # Создание внешнего ключа для столбца user_id
     op.create_foreign_key('fk_parking_sessions_user_id', 'parking_sessions', 'users', ['user_id'], ['id'])
 
