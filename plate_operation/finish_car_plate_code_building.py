@@ -75,6 +75,8 @@ def car_plate_build(image_path):
 
     car_plate = re.sub(r"\s+", "", car_plate)
 
+
+
     if car_plate != None:
         return car_plate
     else:
