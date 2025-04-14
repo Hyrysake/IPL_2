@@ -5,9 +5,10 @@ import pytesseract
 from plate_operation.open_photo_1 import open_photo  # Крок 1
 from plate_operation.discavery_plate_2 import discavery_plate  # Крок 2
 from plate_operation.plate_enlargement_3 import car_plate_enlargement  # Крок 3
+import re
 
 # Вкажіть шлях до виконуваного файлу Tesseract (оновіть цей шлях відповідно до вашої системи)
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\tesseract\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
 
 def car_plate_build(image_path):
     # Отримання поточної директорії скрипта
@@ -72,10 +73,11 @@ def car_plate_build(image_path):
         config='--psm 6 --oem 3 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     )
 
+    car_plate = re.sub(r"\s+", "", car_plate)
+
     if car_plate != None:
         return car_plate
     else:
         return "None"
-
 
 
